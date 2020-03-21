@@ -159,9 +159,7 @@ def model_identification(features, label, mask, poly_order, deriv_order):
     print('Coefficient xi:')
     xi_updated = sparse_coeff(sparsity, xi_thresholded)
     print(xi_updated)
-
     print('Finished')
-
     return xi_updated, losses
 
 uhat = net(X_train)
