@@ -50,7 +50,7 @@ def pde_Recover(xi, library_coeffs, equation_form='u_t'):
                 Equation += ' + '
         Equation += '%.4f' % np.abs(xi[form]) + library_coeffs[form]
     print('Burger equation:')
-    return Equation
+    print(Equation)
 
 
 def normalized_xi_threshold(xi, mode, tresld=0.0):
