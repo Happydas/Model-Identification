@@ -154,7 +154,7 @@ def model_identification(features, label, mask, poly_order, deriv_order):
     # Calculate Error in xi
     xi1_error = np.subtract(np.array([0.10000]), xi_thresholded[0])
     print('xi1_error', xi1_error)
-    xi2_error = np.subtract(np.array([1.00000]), xi_thresholded[1])
+    xi2_error = np.subtract(np.array([1.00000]), np.abs(xi_thresholded[1]))
     print('xi2_error', xi2_error)
     print('Coefficient xi:')
     xi_updated = sparse_coeff(sparsity, xi_thresholded)
