@@ -143,21 +143,22 @@ def model_identification(features, label, mask, poly_order, deriv_order):
 
         print('Coefficient xi:')
         xi_update = sparse_coeff(sparsity, xi_thresholded)
-        # xi_add = np.add(xi_th, xi_update)
-        xi_update_app.append(xi_update)
-        #print('xi_update_app:', xi_update_app)
+        print('xi_update:', xi_update)
 
         # Calculate Error in xi
-        if len(xi_thresholded) > 1 and len(xi_thresholded) < 3:
-            error_1 = np.subtract(np.array([0.10000]), xi_thresholded[0])
+        # if len(xi_thresholded) > 1 and len(xi_thresholded) < 3:
+        if xi_update[2] != 0 and xi_update[4] != 0 and len(xi_thresholded) < 3:
+            xi_update_app.append(xi_update)
+            #print('xi_update_app:', xi_update_app)
+            #print('xi_update:', xi_update[2], xi_update[4])
+            error_1 = np.subtract(np.array([0.10000]), xi_update[2])
             # print('error_1', error_1)
             xi1_error = np.append(xi1, error_1)
             print('xi1_error', xi1_error)
-            error_2 = np.subtract(np.array([1.00000]), np.abs(xi_thresholded[1]))
+            error_2 = np.subtract(np.array([1.00000]), np.abs(xi_update[4]))
             xi2_error = np.append(xi2, error_2)
-            # xi2_error.append(error_2)
             print('xi2_error', xi2_error)
-            f1.write(str(xi_thresholded[0]) + " " + str(xi_thresholded[1]) + "\n")
+            f1.write(str(xi_update[2]) + " " + str(xi_update[4]) + "\n")
             f2.write(str(xi1_error) + " " + str(xi2_error) + "\n")
             xi1_error_app.append(xi1_error)
             print('xi1_error_app:', xi1_error_app)
