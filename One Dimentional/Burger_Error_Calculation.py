@@ -167,7 +167,7 @@ def model_identification(features, label, mask, poly_order, deriv_order):
             correct_prediction += 1
 
         else:
-            print('Error: Index out of bound')
+            print('PDE prediction not correct')
 
     print('correct_prediction:', correct_prediction)
     xi1_error_avg = np.sum(xi1_error_app, axis=0) / correct_prediction
