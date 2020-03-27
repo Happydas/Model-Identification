@@ -57,10 +57,10 @@ tot_items = len(library_coeffs)
 print('tot_items:', tot_items)
 
 mask = torch.ones(tot_items, 1)
-epochs = 8000
+epochs = 10000
 
 xi = nn.Parameter(torch.randn((tot_items, 1), requires_grad=True, device="cpu", dtype=torch.float32))
-params = [{'params': net.parameters(), 'lr': 3e-3}, {'params': xi, 'lr': 3e-2}]
+params = [{'params': net.parameters(), 'lr': 1e-3}, {'params': xi, 'lr': 1e-2}]
 
 optimizer = Adam(params)
 scheduler = ExponentialLR(optimizer, .9998)
@@ -73,7 +73,7 @@ def model_identification(features, label, mask, poly_order, deriv_order):
     xi2_error_app = []
     xi_update_app = []
 
-    numbers = [0, 2, 13, 37, 5, 6, 20, 10, 43, 28]
+    numbers = [0, 5, 26, 57, 73, 80, 95, 104, 129, 151]
     # numbers = [13, 0]
     # print('numbers:', len(numbers))
 
