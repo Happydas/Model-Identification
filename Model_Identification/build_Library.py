@@ -51,39 +51,40 @@ def construct_Dictonary(data, uhat, poly_order, deriv_order):
     return dudt, theta
 
 
-# Construct Library
+#Construct Library for two dimentional data
 def construct_Dictonary_2D(data, uhat, poly_order, deriv_order):
     # build polynomials
     poly = torch.ones_like(uhat)
-
+    
     # concatinate different orders
-    for o in np.arange(1, poly_order + 1):
-        poly_o = poly[:, o - 1:o] * uhat
+    for o in np.arange(1, poly_order+1):
+        poly_o = poly[:,o-1:o]*uhat
         poly = torch.cat((poly, poly_o), dim=1)
-        # print('poly.shape', poly.shape)
-
+        #print('poly.shape', poly.shape)
+        
     # build derivatives
-    # returns gradient of uhat w.r.t. data (id0=spatial, id1=temporal)
-    du = grad(outputs=uhat, inputs=data,
+    du = grad(outputs=uhat, inputs=data, 
               grad_outputs=torch.ones_like(uhat), create_graph=True)[0]
-
+    
     dudt = du[:, 0:1]
     dudx = du[:, 1:2]
     dudy = du[:, 2:3]
-    dudu = grad(outputs=dudx, inputs=data,
-                grad_outputs=torch.ones_like(uhat), create_graph=True)[0]
+    dudu = grad(outputs=dudx, inputs=data, 
+              grad_outputs=torch.ones_like(uhat), create_graph=True)[0]
     dudxx = dudu[:, 1:2]
     dudxy = dudu[:, 2:3]
-    dudyy = grad(outputs=dudy, inputs=data,
-                 grad_outputs=torch.ones_like(dudxx), create_graph=True)[0]
+    dudyy = grad(outputs=dudy, inputs=data, 
+              grad_outputs=torch.ones_like(dudxx), create_graph=True)[0]
+    
+    dudyy = dudyy[:, 2:3]
+   
+    #dudu = torch.cat((torch.ones_like(dudx), dudx, dudy, dudxx, dudyy, dudxy), dim=1)
+    #dudu = torch.cat((torch.ones_like(dudx), dudx, dudy, dudxx, dudyy[:, 2:3], dudxy), dim=1)
 
-    # dudu = torch.cat((torch.ones_like(dudt), du[:,0:1]), dim=1)
-    dudu = torch.cat((torch.ones_like(dudx), torch.ones_like(dudx), dudy, dudxx, dudyy[:, 2:3], dudxy), dim=1)
+    for o in np.arange(1, deriv_order):
+        dudu = torch.cat((torch.ones_like(dudx), dudx, dudy, dudxx, dudyy, dudxy), dim=1)
 
-    # for o in np.arange(1, deriv_order):
-    # du2 = grad(outputs=dudu[:,o:o+1], inputs=data,
-    # grad_outputs=torch.ones_like(uhat), create_graph=True)[0]
-    # dudx = torch.cat((dudx, du2[:,0:1]), dim=1)
+    
 
     # build all possible combinations of poly and dudu vectors
     theta = None
@@ -97,5 +98,5 @@ def construct_Dictonary_2D(data, uhat, poly_order, deriv_order):
                 theta = comb
             else:
                 theta = torch.cat((theta, comb), dim=1)
-
+                
     return dudt, theta
