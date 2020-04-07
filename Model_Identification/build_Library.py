@@ -100,3 +100,65 @@ def construct_Dictonary_2D(data, uhat, poly_order, deriv_order):
                 theta = torch.cat((theta, comb), dim=1)
                 
     return dudt, theta
+
+
+
+#Construct Library for two dimentional data and 3rd order deriv
+def construct_Dictonary_2D_Deriv3(data, uhat, poly_order, deriv_order):
+    # build polynomials
+    poly = torch.ones_like(uhat)
+    
+    # concatinate different orders
+    for o in np.arange(1, poly_order+1):
+        poly_o = poly[:,o-1:o]*uhat
+        poly = torch.cat((poly, poly_o), dim=1)
+        #print('poly.shape', poly.shape)
+        
+    # build derivatives
+    du = grad(outputs=uhat, inputs=data, 
+              grad_outputs=torch.ones_like(uhat), create_graph=True)[0]
+    
+    dudt = du[:, 0:1]
+    dudx = du[:, 1:2]
+    dudy = du[:, 2:3]
+    dudu = grad(outputs=dudx, inputs=data, 
+              grad_outputs=torch.ones_like(uhat), create_graph=True)[0]
+    dudxx = dudu[:, 1:2]
+    dudxy = dudu[:, 2:3]
+    dudyy = grad(outputs=dudy, inputs=data, 
+              grad_outputs=torch.ones_like(dudxx), create_graph=True)[0]
+    # 3rd order derivatives
+    dudyy = dudyy[:, 2:3]
+    
+    duduxx = grad(outputs=dudxx, inputs=data, 
+              grad_outputs=torch.ones_like(dudxx), create_graph=True)[0]
+    dudxxx = duduxx[:, 1:2]
+    dudxxy = duduxx[:, 2:3]
+    
+    duduyy = grad(outputs=dudyy, inputs=data, 
+              grad_outputs=torch.ones_like(dudyy), create_graph=True)[0]
+    dudxyy = duduyy[:, 1:2]
+    dudyyy = duduyy[:, 2:3]
+   
+    dudu = torch.cat((torch.ones_like(dudx), dudx, dudy, dudxx, dudyy, dudxy, dudxxx, dudxxy, dudxyy, dudyyy), dim=1)
+    #dudu = torch.cat((torch.ones_like(dudx), dudx, dudy, dudxx, dudyy[:, 2:3], dudxy), dim=1)
+
+    #for o in np.arange(1, deriv_order):
+        #dudu = torch.cat((torch.ones_like(dudx), dudx, dudy, dudxx, dudyy, dudxy, dudxxx, dudxxy, dudxyy, dudyyy), dim=1)
+
+    
+
+    # build all possible combinations of poly and dudu vectors
+    theta = None
+    for i in range(poly.shape[1]):
+        # print('i:', i)
+        for j in range(dudu.shape[1]):
+            # print('j:', j)
+            comb = poly[:, i:i + 1] * dudu[:, j:j + 1]
+
+            if theta is None:
+                theta = comb
+            else:
+                theta = torch.cat((theta, comb), dim=1)
+                
+    return dudt, theta
