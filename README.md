@@ -16,4 +16,4 @@ tuning parameters to enable consistent model recovery. We present numerical expe
 on 1D Burgers and 2D-Advection-Diffusion equations by adding Gaussian
 noise for discovering the governing PDEs.
 
-For more details, please read Master_Thesis_Neural Network for Model Identification.pdf.
+For more details, please read 'Master_Thesis_Neural Network for Model Identification.pdf'.
