@@ -15,6 +15,8 @@ to analyze dependencies on the number of iteration, sample-size, noise-levels, a
 tuning parameters to enable consistent model recovery. We present numerical experiments
 on 1D Burgers and 2D-Advection-Diffusion equations by adding Gaussian
 noise for discovering the governing PDEs.
+
+For more details, please read "Neural Network for Model Identification.pdf"
                                                          
                                                          
 
